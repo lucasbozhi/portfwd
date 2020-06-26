@@ -223,7 +223,7 @@ func apiHandleProxyDelete(ctx *gin.Context) {
 }
 
 func apiHandleProxyList(ctx *gin.Context) {
-	ctx.JSON(http.StatusOK, configResult.Proxy)
+	ctx.JSON(http.StatusOK, configResult)
 }
 
 func apiHandleProxyDetail(ctx *gin.Context) {
