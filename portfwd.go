@@ -70,6 +70,7 @@ func addProxyItem(localPort string, target string) {
 	}
 	configResult.Proxy[localPort] = target
 	log.Printf("proxy %s to %s", localPort, target)
+	go saveConfig()
 }
 
 func resolveConfig() {
@@ -85,6 +86,28 @@ func resolveConfig() {
 	for localPort, target := range configResult.Proxy {
 		go addProxyItem(localPort, target)
 	}
+}
+
+func saveConfig() {
+	wd, err := os.Getwd()
+	if err != nil {
+		log.Fatal(err)
+	}
+	configName := flag.String("config", path.Join(wd, "config.json"), "config file path")
+
+	flag.Parse()
+	log.Printf("save config %s", *configName)
+
+	config.proxy = configResult.Proxy
+	bf, err := json.Marshal(config)
+    if err != nil {
+        fmt.Println("error:", err)
+	}
+	
+	err = ioutil.WriteFile(*configName, bf, 0666)
+    if err != nil {
+        return
+    }
 }
 
 func prepareTCPHandler(localPort int, targetAddr *net.TCPAddr) {
@@ -151,6 +174,7 @@ func closeAndDelete(localPort string) {
 	_, ok := configResult.Proxy[localPort]
 	if ok {
 		delete(configResult.Proxy, localPort)
+		go saveConfig()
 	}
 }
 
@@ -223,7 +247,7 @@ func apiHandleProxyDelete(ctx *gin.Context) {
 }
 
 func apiHandleProxyList(ctx *gin.Context) {
-	ctx.JSON(http.StatusOK, configResult)
+	ctx.JSON(http.StatusOK, configResult.Proxy)
 }
 
 func apiHandleProxyDetail(ctx *gin.Context) {
