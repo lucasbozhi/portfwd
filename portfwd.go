@@ -98,7 +98,7 @@ func saveConfig() {
 	flag.Parse()
 	log.Printf("save config %s", *configName)
 
-	config.proxy = configResult.Proxy
+	config.Proxy = configResult.Proxy
 	bf, err := json.Marshal(config)
     if err != nil {
         fmt.Println("error:", err)
