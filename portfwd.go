@@ -93,11 +93,8 @@ func saveConfig() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	configName := flag.String("config1", path.Join(wd, "config.json"), "config file path")
-
-	flag.Parse()
+	configName := path.Join(wd, "config.json")
 	log.Printf("save config %s", *configName)
-
 	bf, err := json.Marshal(configResult)
     if err != nil {
         fmt.Println("error:", err)
