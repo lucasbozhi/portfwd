@@ -237,6 +237,12 @@ func apiHandleProxyUpdate(ctx *gin.Context) {
                 return
         }
         local := ctx.Param("local")
+        if configResult.Proxy[local] == item.Target {
+                ctx.JSON(http.StatusCreated, gin.H{
+                "message": "same",
+                 })
+            return
+        }
         closeAndDelete(local)
         go addProxyItem(local, item.Target)
         go saveConfig()
