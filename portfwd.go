@@ -179,7 +179,6 @@ func closeAndDelete(localPort string) {
         _, ok := configResult.Proxy[localPort]
         if ok {
                 delete(configResult.Proxy, localPort)
-                go saveConfig()
         }
 }
 
